@@ -125,7 +125,7 @@ n_r = 4000;               # Rotor speed
 MechAngle_d_oriented = 360/Q_s/2; # Initial angle
 f_0 = n_r/60*N_pp;                # Supplied frequency
 Is_rms = 260;             # RMS current
-I_max = Is_rms/sq(2);     # Maximum current
+Is_max = Is_rms*sq(2);     # Maximum current
 Mat_core = "NO30";        # Material of iron core
 Mat_coil = "Copper";      # Material of coils, Copper or Aluminum
 Mat_magnet = "NMF-37F_70C";   # Material of magnets
@@ -1366,7 +1366,7 @@ for Var in DF_Mxwl.keys():
 # %% Plot contours of L_d-L_q
 # Define the arc parameters
 theta = np.linspace(np.pi/2, np.pi, 100);  # 90-degree arc (0 to π/2 radians)
-radius = Is_rms*sq(2);  # Radius of the arc
+radius = Is_max;  # Radius of the arc
 # Compute the x and y coordinates
 x = radius * np.cos(theta);
 y = radius * np.sin(theta);
