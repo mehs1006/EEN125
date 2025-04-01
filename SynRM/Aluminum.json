@@ -1,0 +1,32 @@
+{
+    "materials": {
+        "Aluminum": {
+            "CoordinateSystemType": "Cartesian",
+            "BulkOrSurfaceType": 1,
+            "PhysicsTypes": {
+                "set": [
+                    "Electromagnetic",
+                    "Thermal",
+                    "Structural"
+                ]
+            },
+            "AttachedData": {
+                "MatAppearanceData": {
+                    "property_data": "appearance_data",
+                    "Red": 232,
+                    "Green": 235,
+                    "Blue": 235
+                }
+            },
+            "permeability": "1.000021",
+            "conductivity": "38000000",
+            "resistivity_thermal_coefficient": "4.29e-3",
+            "thermal_conductivity": "237.5",
+            "mass_density": "2700",
+            "specific_heat": "951",
+            "youngs_modulus": "69000000000",
+            "poissons_ratio": "0.31",
+            "thermal_expansion_coefficient": "2.33e-05"
+        }
+    }
+}
