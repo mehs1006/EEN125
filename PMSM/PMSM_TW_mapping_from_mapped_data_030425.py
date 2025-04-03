@@ -469,9 +469,9 @@ Dict_Mxwl_Vars = {
 };
 
 ##################################################################
-# Assign folder to AEDT file, project, and the design name and type
+# Get folder to AEDT file, project, and the design name and type
 # ~~~~~~~~~~~~~~~~~~~~~
-# Assign folder to AEDT file, project, and the design name and type.
+# Get folder to AEDT file, project, and the design name and type.
 M2D = ansys.aedt.core.Maxwell2d(non_graphical=True);
 M2D.working_directory;
 Path_AEDT = M2D.working_directory;
