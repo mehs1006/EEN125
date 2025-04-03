@@ -44,15 +44,6 @@ aedt_version = "2025.1";              # Version of ANSYS
 
 PWD = (os.getcwd().replace("\\","/"))+"/";
 
-##################################################################
-# Assign folder to AEDT file, project, and the design name and type
-# ~~~~~~~~~~~~~~~~~~~~~
-# Assign folder to AEDT file, project, and the design name and type.
-Path_AEDT = "D:/Ansoft/";
-
-setup_name = "Setup1";
-solver = "TransientXY";
-
 DF_Params = pd.read_csv(PWD+"Design_parameters.csv");
 project_name = DF_Params["Value"][DF_Params["Parameter"] == "Project"].iloc[0];
 design_name = DF_Params["Value"][DF_Params["Parameter"] == "Design"].iloc[0];
@@ -463,8 +454,18 @@ Dict_Mxwl_Vars = {
     "Trq": ["Moving1.Torque", "[Nm]"],
     "P_fe": ["CoreLoss", "[W]"],
     "P_cu": ["StrandedLoss", "[W]"],
-};      
-import os
+};
+
+##################################################################
+# Get folder to AEDT file, project, and the design name and type
+# ~~~~~~~~~~~~~~~~~~~~~
+# Get folder to AEDT file, project, and the design name and type.
+M2D = ansys.aedt.core.Maxwell2d(non_graphical=True);
+M2D.working_directory;
+Path_AEDT = M2D.working_directory;
+M2D.release_desktop();
+Path_AEDT = Path_AEDT.split("Project")[0];
+Path_AEDT = Path_AEDT.replace("\\", "/");
 
 file_path = Path_AEDT+project_name+".aedt.lock";
 if os.path.exists(file_path):
