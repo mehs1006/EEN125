@@ -1048,7 +1048,13 @@ M2D.mesh.assign_length_mesh(
     maximum_elements=None, 
     name="rotor"
     );
-
+M2D.mesh.assign_length_mesh(
+    PM_id, 
+    inside_selection=True, 
+    maximum_length=3, 
+    maximum_elements=None, 
+    name="magnet"
+    );
 # %% Other essential setups
 # ~~~~~~~~~~~~~~~~~~~~
 # Set "eddy effects", "core loss", "transient inductance", "model depth", 
@@ -1260,6 +1266,7 @@ for idx in DF_I_dq["*"]:
             pass;
         Dict_temp[Var+Unit[1]] = Var_rawdata;
         DF_temp = pd.DataFrame.from_dict(Dict_temp);
+        DF_temp = DF_temp.iloc[-36:];
 
     i_alpha = DF_temp["i_A[A]"];
     i_beta = (DF_temp["i_B[A]"]-DF_temp["i_C[A]"])/sq(3);
