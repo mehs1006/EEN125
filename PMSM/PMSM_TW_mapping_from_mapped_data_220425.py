@@ -729,12 +729,16 @@ for Var, Unit in Dict_OP_Vars.items():
         # Add contour labels
         if Var == "Eff":
             plt.clabel(
-                contour_lines, inline=True, fontsize=10, fmt="%.2f", colors='black',
+                contour_lines, inline=True, fontsize=10, fmt="%.f", colors='black',
                 levels=Level_Eff
+                );
+        elif "Psi" in Var:
+            plt.clabel(
+                contour_lines, inline=True, fontsize=10, fmt="%.2f", colors='black'
                 );
         else:
             plt.clabel(
-                contour_lines, inline=True, fontsize=10, fmt="%.2f", colors='black'
+                contour_lines, inline=True, fontsize=10, fmt="%.f", colors='black'
                 );            
         # Customizations
         plt.title(Dict_OP_titles[Var], fontsize=16);
