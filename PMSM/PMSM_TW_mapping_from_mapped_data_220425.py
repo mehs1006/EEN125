@@ -87,7 +87,7 @@ for Var in Dict_Map.keys():
         I_q = Dict_Map[Var]["I_q[A]"].iloc[1:];
         Map = Dict_Map[Var].iloc[1:, 1:];
        
-        # Create contour plot with different colored lines (no fill)
+        # Create a contour plot with different colored lines (no fill)
         plt.figure(figsize=(8, 6), dpi=500);
         # Contour lines with color mapping
         contour_lines = plt.contour(
@@ -108,7 +108,7 @@ for Var in Dict_Map.keys():
         plt.xlabel("$I_d$[A]", fontsize=14);
         plt.ylabel("$I_q$[A]", fontsize=14);
         plt.grid(True, linestyle='--', alpha=0.5);
-        # Add colorbar to indicate values
+        # Add a colorbar to indicate values
         plt.colorbar(contour_lines);
 # %% Send variables to Matlab
 import matlab.engine
@@ -469,9 +469,9 @@ Dict_Mxwl_Vars = {
 };
 
 ##################################################################
-# Get folder to AEDT file, project, and the design name and type
+# Get the folder to the AEDT file, project, and the design name and type
 # ~~~~~~~~~~~~~~~~~~~~~
-# Get folder to AEDT file, project, and the design name and type.
+# Get the folder to the AEDT file, project, and the design name and type.
 M2D = ansys.aedt.core.Maxwell2d(non_graphical=True);
 M2D.working_directory;
 Path_AEDT = M2D.working_directory;
@@ -531,7 +531,7 @@ Dict_OP_Vars = {
 Dict_vari = M2D.available_variations.nominal_w_values_dict;
 
 # Dict_vari = defaultdict();
-# Create a ditionaries to contain all output maps
+# Create a dictionary to contain all output maps
 Dict_OP_Map = defaultdict();
 for Var, Unit in Dict_OP_Vars.items(): 
     Dict_OP_Map[Var+Unit] = defaultdict(list);
@@ -581,6 +581,7 @@ for idx_nr, n_r_ref in enumerate(List_n_r):
                     pass;
                 Dict_temp[Var+Unit[1]] = Var_rawdata;
                 DF_temp = pd.DataFrame.from_dict(Dict_temp);
+                DF_temp = DF_temp.iloc[-36:];
 
             I_d_in = float(I_d_in.replace("A", ""));
             I_q_in = float(I_q_in.replace("A", ""));
@@ -597,7 +598,7 @@ for idx_nr, n_r_ref in enumerate(List_n_r):
                     -i_alpha*sin(gamma)+i_beta*cos(gamma)
                     ), 3
                 );
-            # check that simulation was done according to desired Id and Iq
+            # check that the simulation was done according to the desired Id and Iq
             I_diff = sq((I_d_in - I_d)**2 + (I_q_in - I_q)**2);
             if I_diff > 1:
                 print("***  Warning  ******  desired Id/Iq not obatined");
