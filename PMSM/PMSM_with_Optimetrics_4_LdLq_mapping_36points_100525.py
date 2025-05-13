@@ -2,7 +2,7 @@
 Maxwell 2D: Prius2D 2-layer coil & 2-layer PM
 ---------------------------------------------------
 This example shows how you can use PyAEDT to create a Maxwell 2D transient 
-analysis for a Prius motor using PyAEDT.
+analysis for PMSM using PyAEDT.
 
 Torbjörn Thiringer
 Meng-Ju Hsieh
