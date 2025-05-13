@@ -43,6 +43,7 @@ aedt_version = "2025.1";              # Version of ANSYS
 
 PWD = (os.getcwd().replace("\\","/"))+"/";
 
+
 DF_Params = pd.read_csv(PWD+"Design_parameters.csv");
 project_name = DF_Params["Value"][DF_Params["Parameter"] == "Project"].iloc[0];
 design_name = DF_Params["Value"][DF_Params["Parameter"] == "Design"].iloc[0];
@@ -51,6 +52,7 @@ design_name = DF_Params["Value"][DF_Params["Parameter"] == "Design"].iloc[0];
 R_s = float(DF_Params["Value"][DF_Params["Parameter"] == "R_s[Ohm]"].iloc[0]);
 N_pp = float(DF_Params["Value"][DF_Params["Parameter"] == "N_pp"].iloc[0]);
 I_max_rms = 260;   # Max phase rms current value
+N_step_per_period = 360;     # Number of steps per electrical period
 I_max = np.ceil(I_max_rms*sq(2)); # Amplitude of max current [A]
 I_min = 5; # [A] Minimum current
 I_step = 5; # [A] Current step for current sweep
@@ -87,7 +89,7 @@ for Var in Dict_Map.keys():
         I_q = Dict_Map[Var]["I_q[A]"].iloc[1:];
         Map = Dict_Map[Var].iloc[1:, 1:];
        
-        # Create a contour plot with different colored lines (no fill)
+        # Create contour plot with different colored lines (no fill)
         plt.figure(figsize=(8, 6), dpi=500);
         # Contour lines with color mapping
         contour_lines = plt.contour(
@@ -108,7 +110,7 @@ for Var in Dict_Map.keys():
         plt.xlabel("$I_d$[A]", fontsize=14);
         plt.ylabel("$I_q$[A]", fontsize=14);
         plt.grid(True, linestyle='--', alpha=0.5);
-        # Add a colorbar to indicate values
+        # Add colorbar to indicate values
         plt.colorbar(contour_lines);
 # %% Send variables to Matlab
 import matlab.engine
@@ -466,12 +468,13 @@ Dict_Mxwl_Vars = {
     "P_fe": ["CoreLoss", "[W]"],
     "P_cu": ["StrandedLoss", "[W]"],
     "P_PM": ["SolidLoss", "[W]"]
-};
+};      
+import os
 
 ##################################################################
-# Get the folder to the AEDT file, project, and the design name and type
+# Get folder to AEDT file, project, and the design name and type
 # ~~~~~~~~~~~~~~~~~~~~~
-# Get the folder to the AEDT file, project, and the design name and type.
+# Get folder to AEDT file, project, and the design name and type.
 M2D = ansys.aedt.core.Maxwell2d(non_graphical=True);
 M2D.working_directory;
 Path_AEDT = M2D.working_directory;
@@ -505,7 +508,7 @@ else:
     TempName = design_name+"1";
     M2D.set_active_design(TempName);
     M2D.design_name = design_name+"_4_loss_map";
-
+    M2D["TimeStep"] = "1/f_0/"+str(N_step_per_period);
   
     for key, value in Dict_Mxwl_Vars.items():
         M2D.create_output_variable(key, value[0]);
@@ -531,7 +534,7 @@ Dict_OP_Vars = {
 Dict_vari = M2D.available_variations.nominal_w_values_dict;
 
 # Dict_vari = defaultdict();
-# Create a dictionary to contain all output maps
+# Create a ditionaries to contain all output maps
 Dict_OP_Map = defaultdict();
 for Var, Unit in Dict_OP_Vars.items(): 
     Dict_OP_Map[Var+Unit] = defaultdict(list);
@@ -581,8 +584,7 @@ for idx_nr, n_r_ref in enumerate(List_n_r):
                     pass;
                 Dict_temp[Var+Unit[1]] = Var_rawdata;
                 DF_temp = pd.DataFrame.from_dict(Dict_temp);
-                DF_temp = DF_temp.iloc[-36:];
-
+                DF_temp = DF_temp.iloc[-N_step_per_period:];
             I_d_in = float(I_d_in.replace("A", ""));
             I_q_in = float(I_q_in.replace("A", ""));
             i_alpha = DF_temp["i_A[A]"];
@@ -598,7 +600,7 @@ for idx_nr, n_r_ref in enumerate(List_n_r):
                     -i_alpha*sin(gamma)+i_beta*cos(gamma)
                     ), 3
                 );
-            # check that the simulation was done according to the desired Id and Iq
+            # check that simulation was done according to desired Id and Iq
             I_diff = sq((I_d_in - I_d)**2 + (I_q_in - I_q)**2);
             if I_diff > 1:
                 print("***  Warning  ******  desired Id/Iq not obatined");
@@ -729,16 +731,12 @@ for Var, Unit in Dict_OP_Vars.items():
         # Add contour labels
         if Var == "Eff":
             plt.clabel(
-                contour_lines, inline=True, fontsize=10, fmt="%.f", colors='black',
+                contour_lines, inline=True, fontsize=10, fmt="%.2f", colors='black',
                 levels=Level_Eff
-                );
-        elif "Psi" in Var:
-            plt.clabel(
-                contour_lines, inline=True, fontsize=10, fmt="%.2f", colors='black'
                 );
         else:
             plt.clabel(
-                contour_lines, inline=True, fontsize=10, fmt="%.f", colors='black'
+                contour_lines, inline=True, fontsize=10, fmt="%.2f", colors='black'
                 );            
         # Customizations
         plt.title(Dict_OP_titles[Var], fontsize=16);
@@ -748,5 +746,3 @@ for Var, Unit in Dict_OP_Vars.items():
         # Add colorbar to indicate values
         cbar = plt.colorbar(contour_lines);
         cbar.set_label(Unit, fontsize=14);
-
-
